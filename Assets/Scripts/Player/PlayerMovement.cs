@@ -141,6 +141,7 @@ public class PlayerMovement : MonoBehaviour
         isWalking = velocity.magnitude > 0;
         if (!_wasWalking && isWalking) isWalkingEvent.Invoke(true);
         else if (_wasWalking && !isWalking) isWalkingEvent.Invoke(false);
+        _wasWalking = isWalking;
     }
 
 
