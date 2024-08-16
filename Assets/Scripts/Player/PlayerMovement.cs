@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     public bool isSliding;
 
     private bool _canJump { get { return isGrounded && !isSneaking && !isSliding; } }
-    private bool _canSprint { get { return !isSneaking && isGrounded; } }
+    private bool _canSprint { get { return !isSneaking && isGrounded && isWalking; } }
     private bool _canSneak { get { return isGrounded && !isSprinting; } }
     private bool _canSlide { get { return isSprinting && isGrounded; } }
 
