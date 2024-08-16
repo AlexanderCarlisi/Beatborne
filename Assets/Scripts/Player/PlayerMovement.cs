@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
@@ -30,6 +31,14 @@ public class PlayerMovement : MonoBehaviour
     private bool _canSlide { get { return isSprinting && isGrounded; } }
 
     private Vector2 _moveDirection;
+
+    // Events for Listeners in other Scripts
+    private bool _wasWalking; // Move is in FixedUpdate, don't spam the event
+    public readonly UnityEvent<bool> isWalkingEvent = new UnityEvent<bool>();
+    public readonly UnityEvent<bool> isSprintingEvent = new UnityEvent<bool>();
+    public readonly UnityEvent<bool> isSneakingEvent = new UnityEvent<bool>();
+    public readonly UnityEvent<bool> isSlidingEvent = new UnityEvent<bool>();
+    public readonly UnityEvent<bool> isGroundedEvent = new UnityEvent<bool>();
 
 
     private void Awake() {
@@ -67,24 +76,34 @@ public class PlayerMovement : MonoBehaviour
     private void Sprint(bool sprint) {
         if (sprint && _canSprint) isSprinting = true;
         else isSprinting = false;
+
+        isSprintingEvent.Invoke(sprint);
     }
     private void Sneak(bool sneak) {
         if (sneak && _canSneak) isSneaking = true;
         else isSneaking = false;
+
+        isSneakingEvent.Invoke(sneak);
     }
     private void Slide(bool slide) {
         if (slide && _canSlide) isSliding = true;
         else isSliding = false;
+
+        isSlidingEvent.Invoke(slide);
     }
 
 
     private void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) 
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) {
             isGrounded = true;
+            isGroundedEvent.Invoke(true);
+        }
     }
     private void OnCollisionExit(Collision collision) {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) {
             isGrounded = false;
+            isGroundedEvent.Invoke(false);
+        }
     }
 
 
@@ -120,6 +139,8 @@ public class PlayerMovement : MonoBehaviour
 
         // Update the isWalking flag
         isWalking = velocity.magnitude > 0;
+        if (!_wasWalking && isWalking) isWalkingEvent.Invoke(true);
+        else if (_wasWalking && !isWalking) isWalkingEvent.Invoke(false);
     }
 
 
