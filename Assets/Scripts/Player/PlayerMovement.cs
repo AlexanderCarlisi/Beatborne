@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody _rb;
     [SerializeField] private Transform _cameraTarget;
 
+    public bool isWalking;
     public bool isGrounded;
     public bool isSprinting;
     public bool isSneaking;
@@ -116,6 +117,9 @@ public class PlayerMovement : MonoBehaviour
 
         // Apply the new velocity to the Rigidbody
         _rb.velocity = velocity;
+
+        // Update the isWalking flag
+        isWalking = velocity.magnitude > 0;
     }
 
 
