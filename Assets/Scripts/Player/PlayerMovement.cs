@@ -33,11 +33,13 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _moveDirection;
 
     // Events for Listeners in other Scripts
-    private bool _wasWalking; // Move is in FixedUpdate, don't spam the event
+    private bool _wasWalking;
     public readonly UnityEvent<bool> isWalkingEvent = new UnityEvent<bool>();
+    private bool _wasSprinting;
     public readonly UnityEvent<bool> isSprintingEvent = new UnityEvent<bool>();
+    private bool _wasSneaking;
     public readonly UnityEvent<bool> isSneakingEvent = new UnityEvent<bool>();
-    public readonly UnityEvent<bool> isSlidingEvent = new UnityEvent<bool>();
+    // public readonly UnityEvent<bool> isSlidingEvent = new UnityEvent<bool>();
     public readonly UnityEvent<bool> isGroundedEvent = new UnityEvent<bool>();
 
 
@@ -58,8 +60,8 @@ public class PlayerMovement : MonoBehaviour
         _sneakAction.started += ctx => Sneak(true);
         _sneakAction.canceled += ctx => Sneak(false);
 
-        _slideAction.started += ctx => Slide(true);
-        _slideAction.canceled += ctx => Slide(false);
+        // _slideAction.started += ctx => Slide(true);
+        // _slideAction.canceled += ctx => Slide(false);
     }
 
 
@@ -77,20 +79,22 @@ public class PlayerMovement : MonoBehaviour
         if (sprint && _canSprint) isSprinting = true;
         else isSprinting = false;
 
-        isSprintingEvent.Invoke(sprint);
+        if (_wasSprinting != isSprinting) isSprintingEvent.Invoke(sprint);
+        _wasSprinting = isSprinting;
     }
     private void Sneak(bool sneak) {
         if (sneak && _canSneak) isSneaking = true;
         else isSneaking = false;
 
-        isSneakingEvent.Invoke(sneak);
+        if (_wasSneaking != isSneaking) isSneakingEvent.Invoke(sneak);
+        _wasSneaking = isSneaking;
     }
-    private void Slide(bool slide) {
-        if (slide && _canSlide) isSliding = true;
-        else isSliding = false;
+    // private void Slide(bool slide) {
+    //     if (slide && _canSlide) isSliding = true;
+    //     else isSliding = false;
 
-        isSlidingEvent.Invoke(slide);
-    }
+    //     if (_canJump) isSlidingEvent.Invoke(slide);
+    // }
 
 
     private void OnCollisionEnter(Collision collision) {
@@ -139,8 +143,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Update the isWalking flag
         isWalking = velocity.magnitude > 0;
-        if (!_wasWalking && isWalking) isWalkingEvent.Invoke(true);
-        else if (_wasWalking && !isWalking) isWalkingEvent.Invoke(false);
+        if (_wasWalking != isWalking) isWalkingEvent.Invoke(isWalking);
         _wasWalking = isWalking;
     }
 
