@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -57,11 +58,23 @@ public class SoundEmission : MonoBehaviour
     }
 
 
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) {
+            _soundTrigger.radius += (float) Variables.Object(collision.gameObject).Get("EmissionRadiusAdd");
+            volume += (float) Variables.Object(collision.gameObject).Get("EmissionVolumeAdd");
+        }
+    }
+    private void OnCollisionExit(Collision collision) {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) {
+            _soundTrigger.radius -= (float) Variables.Object(collision.gameObject).Get("EmissionRadiusAdd");
+            volume -= (float) Variables.Object(collision.gameObject).Get("EmissionVolumeAdd");
+        }
+    }
+
+
     private void AddEmission(Emission emission) {
         _soundTrigger.radius += emission.radius;
         volume += emission.volume;
-
-        // Debug.Log("Emission Add");
     }
 
     private void SubtractEmission(Emission emission) {
@@ -75,12 +88,6 @@ public class SoundEmission : MonoBehaviour
         volume -= emission.volume;
     }
 
-    // // Need to be careful with this one, it can be abused.
-    // private void SetEmission(Emission emission) {
-    //     _soundTrigger.radius = emission.radius;
-    //     volume = emission.volume;
-    // }
-
 
     private void Walk(bool isWalking) {
         if (isWalking) AddEmission(_walkEmission);
@@ -90,8 +97,6 @@ public class SoundEmission : MonoBehaviour
     private void Sprint(bool isSprinting) {
         if (isSprinting) AddEmission(_sprintEmission);
         else SubtractEmission(_sprintEmission);
-
-        // Debug.Log("Sprinting: " + isSprinting);
     }
 
     private void Sneak(bool isSneaking) {
@@ -125,6 +130,5 @@ public class SoundEmission : MonoBehaviour
             SubtractEmission(_burstEmission);
             _burstEnded = true;
         }
-
     }
 }
