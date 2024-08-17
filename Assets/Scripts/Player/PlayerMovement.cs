@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -18,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody _rb;
     [SerializeField] private Transform _cameraTarget;
+    [SerializeField] private Transform _model;
 
     public bool isWalking;
     public bool isGrounded;
@@ -140,6 +142,9 @@ public class PlayerMovement : MonoBehaviour
 
         // Apply the new velocity to the Rigidbody
         _rb.velocity = velocity;
+
+        // Rotate the player to face the direction of movement
+        if (worldDirection != Vector3.zero) _model.rotation = Quaternion.LookRotation(worldDirection);
 
         // Update the isWalking flag
         isWalking = velocity.magnitude > 0;
