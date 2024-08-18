@@ -20,7 +20,7 @@ public class EnemyBrain : MonoBehaviour
     
     [SerializeField] private float _accumulatedNoise = 0f;
 
-    private Vector3 _targetDirection;
+    private Vector3 _targetDirection = Vector3.zero;
     [SerializeField] private GameObject _questionmark;
     [SerializeField] private GameObject _exclamationpoint;
 
