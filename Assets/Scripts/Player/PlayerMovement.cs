@@ -135,7 +135,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Calculate the world-space movement direction
         Vector3 worldDirection = forward * _moveDirection.y + right * _moveDirection.x;
-        Vector3 velocity = worldDirection * _moveSpeed * GetMovementModifier();
+        Vector3 velocity = _moveSpeed * GetMovementModifier() * worldDirection;
         
         // Maintain the current vertical velocity (e.g., for jumping/falling)
         velocity.y = _rb.velocity.y;
