@@ -492,9 +492,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sensitivity: 0.3
   _alertness: 0.5
-  _directionThresholdVolume: 15
+  _directionThresholdVolume: 10
   _directionThresholdTime: 1.5
-  _alertThresholdVolume: 25
+  _alertThresholdVolume: 20
   _alertThresholdTime: 1
   _accumulatedNoise: 0
   _questionmark: {fileID: 365404957}
